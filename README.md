@@ -11,7 +11,7 @@ Before using this project, you need to:
 1 Download and unzip this package.\
 2 Open Eclipse Java EE. Choose a workspace you like, click "launch".\
 3 After getting in Eclipse, select "File->Open Project From File System".\
-![alt text](Screen Shot 2018-02-01 at 9.01.55 PM.png)
+![alt text](https://github.com/KignorChan/libnumberWebServer/blob/master/capture/Screen%20Shot%202018-02-01%20at%209.01.55%20PM.png)
 4 Click "Directory", Find the package you just download and unzip, Click "Open", then click "Finish".\
 5 In project explorer, right click package name "libnumber", click "Run as -> Run on server".\
 6 You need to deploy server. Select "Tomcat V9.0 Server" in the list, click next.\
