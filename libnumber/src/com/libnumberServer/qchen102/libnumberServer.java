@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 
 import javax.ws.rs.Consumes;
@@ -41,12 +42,92 @@ public class libnumberServer {
 	@Path("/parse/text/{i}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String libNumber(@PathParam("i") String i) {
-		//String stringNumber = i;
-		String finalNumber = "";
+		return getPhoneNumberFromString(i);
+	}
+	
+	 
+
+	@POST
+	@Path("/parse/file")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	public String receiveFile(InputStream incomingData) {
+		String context = "";
+		ArrayList<String> tempContext = new ArrayList<String>();
+		try {
+			BufferedReader in = new BufferedReader(new InputStreamReader(incomingData));
+			
+			String line = null;
+			Integer lineNumber = 0;
+			while ((line = in.readLine()) != null) {
+				tempContext.add(line);
+			
+				lineNumber++;
+			}
+			
+			for(int i = 4 ; i < lineNumber-1 ; i++) {
+				context += tempContext.get(i);
+				context += "\n";
+			}
+			
+		} catch (Exception e) {
+			System.out.println("Error Parsing: - ");
+		}
+		//System.out.println("Data Received: " + crunchifyBuilder.toString());
+		System.out.println("Context: "+ context);
+		//return Response.status(200).entity(crunchifyBuilder.toString()).build();
+		return getPhoneNumberFromString(context);
+	}
+
+	
+		@POST
+		@Path("/parse/file2")
+		@Consumes(MediaType.TEXT_PLAIN)
+		@Produces(MediaType.APPLICATION_JSON)
+		public ArrayList<String> libNumberPost(FileReader file)throws Exception {
+			BufferedReader reader = new BufferedReader(file);
+
+			String text = "";
+			String line = reader.readLine();
+			while(line != null) {
+				text += line;
+				line = reader.readLine();
+			}
+			
+			String finalNumber = "";
+			Map<Integer, List<String>> countryCodeToRegionCodeMap = 
+					CountryCodeToRegionCodeMap.getCountryCodeToRegionCodeMap();
+			for(Integer countryCode : countryCodeToRegionCodeMap.keySet()) {
+				finalNumber = parseContact(text, Integer.toString(countryCode));
+				if(finalNumber!=null) {
+					break;
+				}
+			}
+				
+			if(finalNumber==null) {
+				finalNumber = "";
+			}else {
+				finalNumber = "("+ finalNumber;
+			}
+			
+			boolean NumberFound = false;
+			for(String phoneNumber : phoneNumbers) {
+				if(finalNumber.equals(phoneNumber)) {
+					NumberFound = true;
+					break;
+				}
+			}
+			if(!NumberFound) {
+				phoneNumbers.add(finalNumber);
+			}
+			
+		    return phoneNumbers;
+		}
+	
+	public static String getPhoneNumberFromString(String i) {
+String finalNumber = "";
 		
 		Map<Integer, List<String>> countryCodeToRegionCodeMap = 
 				CountryCodeToRegionCodeMap.getCountryCodeToRegionCodeMap();
-		//CountryCodeToRegionCodeMap countryCodeToRegionCodeMap = new CountryCodeToRegionCodeMap();
 		for(Integer countryCode : countryCodeToRegionCodeMap.keySet()) {
 			finalNumber = parseContact(i, Integer.toString(countryCode));
 			if(finalNumber!=null) {
@@ -61,86 +142,7 @@ public class libnumberServer {
 		}
 	    return finalNumber;
 	}
-	
-	@POST
-	@Path("/parse/file")
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	@Produces(MediaType.APPLICATION_JSON)
-	public ArrayList<String> libNumberPost(FileReader file)throws Exception {
-		BufferedReader reader = new BufferedReader(file);
-
-		String text = "";
-		String line = reader.readLine();
-		while(line != null) {
-			text += line;
-			line = reader.readLine();
-		}
 		
-		String finalNumber = "";
-		Map<Integer, List<String>> countryCodeToRegionCodeMap = 
-				CountryCodeToRegionCodeMap.getCountryCodeToRegionCodeMap();
-		for(Integer countryCode : countryCodeToRegionCodeMap.keySet()) {
-			finalNumber = parseContact(text, Integer.toString(countryCode));
-			if(finalNumber!=null) {
-				break;
-			}
-		}
-			
-		if(finalNumber==null) {
-			finalNumber = "";
-		}else {
-			finalNumber = "("+ finalNumber;
-		}
-		
-		boolean NumberFound = false;
-		for(String phoneNumber : phoneNumbers) {
-			if(finalNumber.equals(phoneNumber)) {
-				NumberFound = true;
-				break;
-			}
-		}
-		if(!NumberFound) {
-			phoneNumbers.add(finalNumber);
-		}
-		
-	    return phoneNumbers;
-	}
-	 
-	
-	
-	
-	
-//	@POST
-//	@Path("/parse/file2")
-//	@Consumes(MediaType.MULTIPART_FORM_DATA)
-//	public Response uploadFile(
-//			@FormDataParam("file") InputStream uploadedInputStream,
-//			@FormDataParam("file") FormDataContentDisposition fileDetail) {
-//		// check if all form parameters are provided
-//		if (uploadedInputStream == null || fileDetail == null)
-//			return Response.status(400).entity("Invalid form data").build();
-//		// create our destination folder, if it not exists
-//		try {
-//			createFolderIfNotExists(UPLOAD_FOLDER);
-//		} catch (SecurityException se) {
-//			return Response.status(500)
-//					.entity("Can not create destination folder on server")
-//					.build();
-//		}
-//		String uploadedFileLocation = UPLOAD_FOLDER + fileDetail.getFileName();
-//		try {
-//			saveToFile(uploadedInputStream, uploadedFileLocation);
-//		} catch (IOException e) {
-//			return Response.status(500).entity("Can not save file").build();
-//		}
-//		return Response.status(200)
-//				.entity("File saved to " + uploadedFileLocation).build();
-//	}
-	
-	
-	
-	
-	
 	public static String parseContact(String contact, String countrycode) {
 	    PhoneNumber phoneNumber = null;
 	    PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
