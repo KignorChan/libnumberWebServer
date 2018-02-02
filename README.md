@@ -26,5 +26,9 @@ http://localhost:8080/libnumber/api/phonenumbers/parse/text/Seneca%20Phone%20Num
 ![alt text](https://github.com/KignorChan/libnumberWebServer/blob/master/capture/Screen%20Shot%202018-02-01%20at%209.11.31%20PM.png)
 
 
+# Issues
+This application can just basically test one phone number from GET and POST. It still has a long way to be done! Click [Here](https://github.com/KignorChan/libnumberWebServer/issues) to see details.
+
+
 # License
 Here is [LICENSE](LICENSE)
