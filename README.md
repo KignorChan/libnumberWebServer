@@ -20,10 +20,11 @@ Before using this project, you need to:
 7 Click browse, select the Tomcat package you download. Click Finish.\
 ![alt text](https://github.com/KignorChan/libnumberWebServer/blob/master/capture/Screen%20Shot%202018-02-01%20at%209.06.52%20PM.png)
 8 The server has started. You can test in chrome browser address by typing:
-![alt text](https://github.com/KignorChan/libnumberWebServer/blob/master/capture/Screen%20Shot%202018-02-01%20at%209.11.31%20PM.png)
 ```
 http://localhost:8080/libnumber/api/phonenumbers/parse/text/Seneca%20Phone%20Number%3A%20416-491-5050" 
 ```
+![alt text](https://github.com/KignorChan/libnumberWebServer/blob/master/capture/Screen%20Shot%202018-02-01%20at%209.11.31%20PM.png)
+
 
 # License
 Here is [LICENSE](LICENSE)
