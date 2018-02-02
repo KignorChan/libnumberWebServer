@@ -79,52 +79,52 @@ public class libnumberServer {
 	}
 
 	
-		@POST
-		@Path("/parse/file2")
-		@Consumes(MediaType.TEXT_PLAIN)
-		@Produces(MediaType.APPLICATION_JSON)
-		public ArrayList<String> libNumberPost(FileReader file)throws Exception {
-			BufferedReader reader = new BufferedReader(file);
-
-			String text = "";
-			String line = reader.readLine();
-			while(line != null) {
-				text += line;
-				line = reader.readLine();
-			}
-			
-			String finalNumber = "";
-			Map<Integer, List<String>> countryCodeToRegionCodeMap = 
-					CountryCodeToRegionCodeMap.getCountryCodeToRegionCodeMap();
-			for(Integer countryCode : countryCodeToRegionCodeMap.keySet()) {
-				finalNumber = parseContact(text, Integer.toString(countryCode));
-				if(finalNumber!=null) {
-					break;
-				}
-			}
-				
-			if(finalNumber==null) {
-				finalNumber = "";
-			}else {
-				finalNumber = "("+ finalNumber;
-			}
-			
-			boolean NumberFound = false;
-			for(String phoneNumber : phoneNumbers) {
-				if(finalNumber.equals(phoneNumber)) {
-					NumberFound = true;
-					break;
-				}
-			}
-			if(!NumberFound) {
-				phoneNumbers.add(finalNumber);
-			}
-			
-		    return phoneNumbers;
-		}
+//		@POST
+//		@Path("/parse/file2")
+//		@Consumes(MediaType.TEXT_PLAIN)
+//		@Produces(MediaType.APPLICATION_JSON)
+//		public ArrayList<String> libNumberPost(FileReader file)throws Exception {
+//			BufferedReader reader = new BufferedReader(file);
+//
+//			String text = "";
+//			String line = reader.readLine();
+//			while(line != null) {
+//				text += line;
+//				line = reader.readLine();
+//			}
+//			
+//			String finalNumber = "";
+//			Map<Integer, List<String>> countryCodeToRegionCodeMap = 
+//					CountryCodeToRegionCodeMap.getCountryCodeToRegionCodeMap();
+//			for(Integer countryCode : countryCodeToRegionCodeMap.keySet()) {
+//				finalNumber = parseContact(text, Integer.toString(countryCode));
+//				if(finalNumber!=null) {
+//					break;
+//				}
+//			}
+//				
+//			if(finalNumber==null) {
+//				finalNumber = "";
+//			}else {
+//				finalNumber = "("+ finalNumber;
+//			}
+//			
+//			boolean NumberFound = false;
+//			for(String phoneNumber : phoneNumbers) {
+//				if(finalNumber.equals(phoneNumber)) {
+//					NumberFound = true;
+//					break;
+//				}
+//			}
+//			if(!NumberFound) {
+//				phoneNumbers.add(finalNumber);
+//			}
+//			
+//		    return phoneNumbers;
+//		}
 	
 	public static String getPhoneNumberFromString(String i) {
-String finalNumber = "";
+		String finalNumber = "";
 		
 		Map<Integer, List<String>> countryCodeToRegionCodeMap = 
 				CountryCodeToRegionCodeMap.getCountryCodeToRegionCodeMap();
