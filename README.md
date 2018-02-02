@@ -19,3 +19,6 @@ Before using this project, you need to:
 ```
 http://localhost:8080/libnumber/api/phonenumbers/parse/text/Seneca%20Phone%20Number%3A%20416-491-5050" 
 ```
+
+# License
+Here is [LICENSE](LICENSE)
