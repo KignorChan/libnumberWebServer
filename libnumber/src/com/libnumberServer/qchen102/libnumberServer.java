@@ -41,17 +41,16 @@ public class libnumberServer {
 	@GET
 	@Path("/parse/text/{i}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String libNumber(@PathParam("i") String i) {
-		return getPhoneNumberFromString(i);
+	public String libNumber(@PathParam("i") String i) throws Exception {
+		return "["+getPhoneNumberFromString(i)+"]";
 	}
 	
-	 
-
 	@POST
 	@Path("/parse/file")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public String receiveFile(InputStream incomingData) {
+	public String receiveFile(InputStream incomingData) throws Exception {
 		String context = "";
+		String res = "";
 		ArrayList<String> tempContext = new ArrayList<String>();
 		try {
 			BufferedReader in = new BufferedReader(new InputStreamReader(incomingData));
@@ -60,22 +59,30 @@ public class libnumberServer {
 			Integer lineNumber = 0;
 			while ((line = in.readLine()) != null) {
 				tempContext.add(line);
-			
 				lineNumber++;
 			}
-			
+						
 			for(int i = 4 ; i < lineNumber-1 ; i++) {
-				context += tempContext.get(i);
-				context += "\n";
+				context = tempContext.get(i);				
+				String ss = getPhoneNumberFromString(context);		
+				
+				if(ss != null) {
+					res += ss+",";
+				}
 			}
 			
+			res = res.substring(0, res.length() - 1);
+			res = "["+res+"]";
+
 		} catch (Exception e) {
 			System.out.println("Error Parsing: - ");
 		}
+		return res;
+		
 		//System.out.println("Data Received: " + crunchifyBuilder.toString());
-		System.out.println("Context: "+ context);
+		//System.out.println("Context: "+ context);
 		//return Response.status(200).entity(crunchifyBuilder.toString()).build();
-		return getPhoneNumberFromString(context);
+		//return getPhoneNumberFromString(context);
 	}
 
 	
@@ -125,7 +132,7 @@ public class libnumberServer {
 	
 	
 	
-	public static String getPhoneNumberFromString(String i) {
+	public static String getPhoneNumberFromString(String i) throws Exception{
 		String finalNumber = "";
 		
 		Map<Integer, List<String>> countryCodeToRegionCodeMap = 
@@ -133,15 +140,16 @@ public class libnumberServer {
 		for(Integer countryCode : countryCodeToRegionCodeMap.keySet()) {
 			finalNumber = parseContact(i, Integer.toString(countryCode));
 			if(finalNumber!=null) {
+				finalNumber = "\"("+finalNumber+"\"";
 				break;
 			}
 		}
-			
-		if(finalNumber==null) {
-			finalNumber = "[]";
-		}else {
-			finalNumber = "[\"("+ finalNumber + "\"]";
-		}
+		
+//		if(finalNumber==null) {
+//			finalNumber = "[]";
+//		}else {
+//			finalNumber = "[\"("+ finalNumber + "\"]";
+//		}
 	    return finalNumber;
 	}
 		
